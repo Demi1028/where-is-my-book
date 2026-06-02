@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1779333144 source:d:\learn\c\6\pro7.3\btree.cpp
+	<stdio.h>
+	<malloc.h>
+
+1779334731 source:d:\learn\c\6\pro7.3\main.cpp
+	"btree.cpp"
+
+1779333144 d:\learn\c\6\pro7.3\btree.cpp
+	<stdio.h>
+	<malloc.h>
+

@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1779939167 source:d:\learn\c\6\pro8.2\btree.cpp
+	<stdio.h>
+	<string.h>
+
+1779939129 source:d:\learn\c\6\pro8.2\main.cpp
+	"btree.cpp"
+
+1779939167 d:\learn\c\6\pro8.2\btree.cpp
+	<stdio.h>
+	<string.h>
+
+1779939167 source:d:\learn\c\8\pro8.2\btree.cpp
+	<stdio.h>
+	<string.h>
+
+1779939343 source:d:\learn\c\8\pro8.2\main.cpp
+	"btree.cpp"
+
+1779939167 d:\learn\c\8\pro8.2\btree.cpp
+	<stdio.h>
+	<string.h>
+

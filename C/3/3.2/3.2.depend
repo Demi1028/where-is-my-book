@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1776912659 source:d:\learn\c\3.2\main.cpp
+	"listack.cpp"
+
+1776912659 d:\learn\c\3.2\listack.cpp
+	<stdio.h>
+	<malloc.h>
+

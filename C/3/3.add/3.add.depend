@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1776916392 source:d:\learn\c\3.add\sqstack.cpp
+	<stdio.h>
+	<malloc.h>
+
+1776915935 source:d:\learn\c\3.add\main.cpp
+	<iostream>
+	"sqstack.cpp"
+
+1776916392 d:\learn\c\3.add\sqstack.cpp
+	<stdio.h>
+	<malloc.h>
+

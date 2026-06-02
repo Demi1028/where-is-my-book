@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1778087327 source:d:\learn\c\5\pro5.1\main.cpp
+	"DLinkList.cpp"
+
+1778122403 d:\learn\c\5\pro5.1\dlinklist.cpp
+	<stdio.h>
+	<stdlib.h>
+
+1778087690 source:d:\learn\c\5\pro5.1\main2.cpp
+	"DLinkList.cpp"
+
+1778122403 source:d:\learn\c\5\pro5.1\dlinklist.cpp
+	<stdio.h>
+	<stdlib.h>
+

@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1777522445 source:d:\learn\c\4.3\stackqueue.cpp
+	<stdio.h>
+	<malloc.h>
+
+1777521679 source:d:\learn\c\4.3\main.cpp
+	<iostream>
+	"stackqueue.cpp"
+
+1777521470 d:\learn\c\4.3\stackqueue.cpp
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+

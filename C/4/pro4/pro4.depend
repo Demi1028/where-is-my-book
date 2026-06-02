@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1777512704 source:d:\learn\c\pro4\main.cpp
+	<iostream>
+	"liqueue.cpp"
+
+1777512857 d:\learn\c\pro4\liqueue.cpp
+	<stdio.h>
+	<malloc.h>
+
+1777512857 source:d:\learn\c\pro4\liqueue.cpp
+	<stdio.h>
+	<malloc.h>
+

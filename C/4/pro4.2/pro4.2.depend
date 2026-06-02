@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1777516064 source:d:\learn\c\pro4.2\main.cpp
+	"sqqueue.cpp"
+
+1777518900 d:\learn\c\pro4.2\sqqueue.cpp
+	<stdio.h>
+	<malloc.h>
+
+1777518900 source:d:\learn\c\pro4.2\sqqueue.cpp
+	<stdio.h>
+	<malloc.h>
+

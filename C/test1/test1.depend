@@ -1,0 +1,35 @@
+# depslib dependency file v1.0
+1775710505 source:c:\users\administrator\desktop\test1\sqlist.cpp
+	<stdio.h>
+	<stdlib.h>
+
+1775710094 source:c:\users\administrator\desktop\test1\main.cpp
+	<iostream>
+	"sqList.cpp"
+
+1775710505 c:\users\administrator\desktop\test1\sqlist.cpp
+	<stdio.h>
+	<stdlib.h>
+
+1775706986 c:\users\administrator\desktop\test1\sqlist.h
+
+1775710223 source:c:\users\administrator\desktop\test1\1.3.cpp
+	<iostream>
+	"sqList.cpp"
+
+1776144625 source:d:\learn\c\test1\main.cpp
+	<iostream>
+	"sqList.cpp"
+
+1776144491 d:\learn\c\test1\sqlist.cpp
+	<stdio.h>
+	<stdlib.h>
+
+1776144491 source:d:\learn\c\test1\sqlist.cpp
+	<stdio.h>
+	<stdlib.h>
+
+1776014923 source:d:\learn\c\test1\2.1.2.cpp
+	<iostream>
+	"sqList.cpp"
+

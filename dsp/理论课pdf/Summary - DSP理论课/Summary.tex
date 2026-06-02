@@ -1,0 +1,357 @@
+﻿\documentclass[UTF8,10pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.55cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,xcolor,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.18em,topsep=0.25em}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=0.18em,topsep=0.25em}
+\definecolor{srcgray}{RGB}{90,90,90}
+\newcommand{\src}[1]{\par\vspace{-0.2em}{\footnotesize\color{srcgray}来源：#1}\vspace{0.15em}}
+\newcommand{\key}[1]{\textbf{#1}}
+\newcommand{\dd}{\mathrm{d}}
+\title{DSP 理论课考前复习速查表\\\large 离散系统、变换、FFT 与数字滤波器设计}
+\author{基于 41 份课件 PDF 整理}
+\date{\today}
+\begin{document}
+\maketitle
+\begin{center}
+\small 中文主写，关键术语保留英文；每个主题附原课件文件名与页码，便于回查。\\
+覆盖 41 个 PDF、605 页；重点按期末考试结构组织。
+\end{center}
+\tableofcontents
+
+\section{考前优先级与总览}
+最后一份课件给出的考试范围可直接作为冲刺顺序：
+\begin{enumerate}
+  \item LTI 系统频率响应、输入与输出；
+  \item 系统函数、差分方程、单位脉冲响应；
+  \item 圆周卷积、线性卷积与 DFT；
+  \item FFT 蝶形与谱分析；
+  \item 滤波器结构；
+  \item 双线性变换法、脉冲响应不变法；
+  \item 窗函数法、频率采样法；
+  \item 有限字长效应。
+\end{enumerate}
+\src{15\_2\_有限字长效应与复习.pdf，p.22}
+
+\section{离散时间信号、LTI 系统与抽样}
+\subsection{基本序列与频率}
+\begin{itemize}
+  \item 离散信号只在\key{时间}上量化；数字信号同时在时间和幅度上量化。
+  \item 常用序列：单位脉冲 $\delta[n]$、单位阶跃 $u[n]$、矩形序列 $R_N[n]$、指数序列 $a^n$、虚指数序列 $e^{j\omega n}$。
+  \item 模拟角频率与数字角频率关系：$\omega=\Omega T$。数字频率以 $2\pi$ 为周期。
+  \item $e^{j\omega n}$ 为周期序列的条件：$\omega/(2\pi)=M/N$ 是最简有理数；基本周期为 $N$。
+\end{itemize}
+\src{1\_1\_离散时间信号与系统.pdf，p.5--13}
+
+\subsection{卷积、系统判据与差分方程}
+\begin{align*}
+ y[n]&=x[n]*h[n]=\sum_{k=-\infty}^{\infty}x[k]h[n-k],\\
+ h[n]&=\mathcal{T}\{\delta[n]\}.
+\end{align*}
+有限长卷积的起止下标分别相加，长度为 $L_x+L_h-1$。
+\begin{itemize}
+  \item \key{线性时不变系统（Linear Time-Invariant, LTI）}完全由 $h[n]$ 描述。
+  \item 因果充要条件：$h[n]=0,\ n<0$。
+  \item BIBO 稳定充要条件：$\sum_{n=-\infty}^{\infty}|h[n]|<\infty$。
+  \item 抽取器 $y[n]=x[Mn]$ 通常是时变系统：$\mathcal{T}\{x[n-n_0]\}=x[Mn-n_0]\neq y[n-n_0]$。
+\end{itemize}
+\src{1\_2\_离散时间信号与系统.pdf，p.3--8；2\_0\_离散时间信号与系统.pdf，p.2--10}
+
+\subsection{抽样与重建}
+带限信号无混叠的充分条件：
+\[
+ f_s\ge 2f_m,\qquad \Omega_s\ge 2\Omega_m,\qquad T\le \frac{1}{2f_m}.
+\]
+$f_s=2f_m$ 称为 Nyquist rate。工程信号通常先经过抗混叠低通滤波器，再做 A/D。理想重建可写为
+\[
+ x(t)=\sum_{k=-\infty}^{\infty}x(kT)h_r(t-kT).
+\]
+连续系统经 A/D、数字滤波器、D/A 时，数字截止频率与模拟截止频率满足 $\omega_c=\Omega_c T$。
+\src{2\_1\_离散时间信号与系统.pdf，p.11--20；2\_2\_离散时间信号与系统.pdf，p.1--7、p.12--15}
+
+\paragraph{易错点} 时域相乘对应频域卷积：例如 $f(t)f(2t)$ 的最高频率是 $3f_m$，最小抽样频率为 $6f_m$；而卷积 $f(t)*f(2t)$ 的频域是乘积，带宽取交集。
+\src{2\_2\_离散时间信号与系统.pdf，p.2}
+
+\section{Z 变换、ROC 与系统函数}
+\subsection{定义与典型变换对}
+\[
+ X(z)=\sum_{n=-\infty}^{\infty}x[n]z^{-n}.
+\]
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+序列 & Z 变换 & 收敛域（ROC）\\
+\midrule
+$a^n u[n]$ & $\dfrac{1}{1-az^{-1}}$ & $|z|>|a|$\\[0.4em]
+$-a^n u[-n-1]$ & $\dfrac{1}{1-az^{-1}}$ & $|z|<|a|$\\[0.4em]
+有限长序列 & 多项式或 Laurent 多项式 & 除可能的 $0,\infty$ 外全平面\\
+\bottomrule
+\end{tabular}
+\end{center}
+同一个代数表达式因 ROC 不同可对应不同序列。逆变换常用部分分式法、留数法、幂级数展开法。
+\src{3\_0\_Z变换.pdf，p.4--9；3\_1\_Z变换.pdf，p.3--11；3\_2\_Z变换.pdf，p.1--3}
+
+\subsection{ROC、极点与系统性质}
+\begin{itemize}
+  \item 稳定系统：$H(z)$ 的 ROC 包含单位圆。
+  \item 因果有理系统：ROC 位于最外层极点之外并延伸到无穷。
+  \item 因果稳定有理系统：所有极点位于单位圆内部。
+\end{itemize}
+\src{3\_0\_Z变换.pdf，p.10--12；4\_1\_Z变换.pdf，p.5--7}
+
+若差分方程为
+\[
+ \sum_{k=0}^{N}a_k y[n-k]=\sum_{k=0}^{M}b_k x[n-k],
+\]
+则
+\[
+ H(z)=\frac{Y(z)}{X(z)}=\frac{\sum_{k=0}^{M}b_kz^{-k}}{\sum_{k=0}^{N}a_kz^{-k}}.
+\]
+单位圆处给出频率响应：
+\[
+ H(e^{j\omega})=H(z)\big|_{z=e^{j\omega}}=\sum_n h[n]e^{-j\omega n}.
+\]
+\src{4\_1\_Z变换.pdf，p.7；4\_2\_Z变换.pdf，p.1--6}
+
+\paragraph{典型题路线} 由 $H(z)$ 和 ROC 求 $h[n]$：先部分分式展开，再按 ROC 为每一项选右边或左边序列；最后检查因果性和单位圆是否在 ROC 内。
+
+\section{DTFT、DFS 与 DFT}
+\subsection{DTFT 与性质}
+\begin{align*}
+ X(e^{j\omega})&=\sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n},\\
+ x[n]&=\frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\omega})e^{j\omega n}\dd\omega.
+\end{align*}
+$X(e^{j\omega})$ 是连续的 $2\pi$ 周期函数。绝对可和是 DTFT 存在的充分条件；部分能量有限序列可按均方意义收敛。
+\src{5\_0\_Z变换.pdf，p.10--13；5\_1\_DTFT.pdf，p.1--2}
+
+实序列满足共轭对称：
+\[
+ X(e^{j\omega})=X^*(e^{-j\omega}).
+\]
+因此幅度和实部为偶函数，相位和虚部为奇函数。
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+时域操作 & 频域结果\\
+\midrule
+$x[n-n_0]$ & $e^{-j\omega n_0}X(e^{j\omega})$\\
+$e^{j\omega_0 n}x[n]$ & $X(e^{j(\omega-\omega_0)})$\\
+$x[n]*h[n]$ & $X(e^{j\omega})H(e^{j\omega})$\\
+$x[n]h[n]$ & $\dfrac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\theta})H(e^{j(\omega-\theta)})\dd\theta$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Parseval 定理：$\sum_n|x[n]|^2=\frac{1}{2\pi}\int_{-\pi}^{\pi}|X(e^{j\omega})|^2\dd\omega$。
+\src{5\_1\_DTFT.pdf，p.5--7；6\_0\_DTFT.pdf，p.7--12}
+
+\subsection{DFS、DFT 与 Z 变换采样}
+令 $W_N=e^{-j2\pi/N}$。对 N 周期序列，
+\begin{align*}
+ X[k]&=\sum_{n=\langle N\rangle}x[n]W_N^{nk},\\
+ x[n]&=\frac{1}{N}\sum_{k=\langle N\rangle}X[k]W_N^{-nk}.
+\end{align*}
+对 N 点有限长序列，DFT 形式为
+\[
+ X[k]=\sum_{n=0}^{N-1}x[n]W_N^{nk},\quad k=0,\dots,N-1.
+\]
+DFT 等价于 Z 变换在单位圆上的 N 个等间隔采样：$X[k]=X(z)|_{z=e^{j2\pi k/N}}$。
+\src{6\_1\_DTFT.pdf，p.2--6；8\_2\_DFT性质.pdf，p.11--12}
+
+\subsection{圆周卷积、线性卷积与相关}
+N 点圆周卷积：
+\[
+ y[n]=\sum_{m=0}^{N-1}x[m]h[(n-m)_N],\qquad Y[k]=X[k]H[k].
+\]
+若需要通过 DFT 求线性卷积，必须零填充至
+\[
+ N\ge L_x+L_h-1.
+\]
+相关函数：
+\[
+ r_{xy}[m]=\sum_n x[n]y^*[n-m],\qquad R_{xy}(e^{j\omega})=X(e^{j\omega})Y^*(e^{j\omega}).
+\]
+\src{8\_2\_DFT性质.pdf，p.1--16；9\_0\_DFT性质.pdf，p.12--14}
+
+\paragraph{易错点} 未零填充时，DFT 相乘再 IDFT 得到的是圆周卷积；线性卷积会发生时域混叠。
+
+\section{DFT 谱分析与 FFT}
+\subsection{谱分析的三个误差源}
+\begin{center}
+\begin{tabular}{p{2.3cm}p{5.5cm}p{6cm}}
+\toprule
+问题 & 原因 & 改善方法\\
+\midrule
+混叠（aliasing） & 抽样频率不足，周期化频谱重叠 & 提高 $f_s$，A/D 前加抗混低通滤波器\\
+泄漏（leakage） & 有限观测长度等价于加窗 & 延长记录长度，选择适当窗函数\\
+栅栏效应（picket-fence effect） & DFT 只在离散频点观察频谱 & 增加 DFT 点数；区分零填充与真实延长记录\\
+\bottomrule
+\end{tabular}
+\end{center}
+频率分辨率：
+\[
+ \Delta f=\frac{f_s}{N}=\frac{1}{T_p}.
+\]
+单纯提高采样频率不会改善分辨率；关键是延长有效观测时长 $T_p$。
+\src{9\_1\_DFT性质.pdf，p.10--13；9\_2\_DFT分析信号频谱.pdf，p.1--3、p.11--14}
+
+\subsection{FFT 核心结论}
+FFT 是 DFT 的快速算法，不是新的变换。直接 DFT 复乘数量级为 $N^2$。对 $N=2^M$ 的基 2 FFT：
+\begin{itemize}
+  \item 层数 $M=\log_2N$；
+  \item 每层 $N/2$ 个蝶形；
+  \item 蝶形：$A'=A+W_N^rB$，$B'=A-W_N^rB$；
+  \item DIT（Decimation in Time）：输入倒位序，输出自然序；
+  \item DIF（Decimation in Frequency）：输入自然序，输出倒位序；
+  \item DIT 与 DIF 的计算量相同。
+\end{itemize}
+\src{10\_1\_DIT快速傅立叶变换.pdf，p.1--15；10\_2\_DIT\_DIF快速傅立叶变换.pdf，p.1--5；11\_0\_DIF快速傅立叶变换.pdf，p.13--18}
+
+\paragraph{典型题} 画 8 点蝶形图，标倒位序，填写每一级结果；统计 16 点基 2 FFT 的复乘和复加次数。
+
+\section{IIR 数字滤波器设计}
+\subsection{Butterworth 模拟原型}
+Butterworth（巴特沃思）低通是最平幅度逼近：
+\[
+ |H_a(j\Omega)|^2=\frac{1}{1+(\Omega/\Omega_c)^{2N}}.
+\]
+由 $\Omega_p,\Omega_s,A_p,A_s$ 求阶数：
+\[
+ N\ge
+ \frac{\log_{10}\!\left[(10^{A_s/10}-1)/(10^{A_p/10}-1)\right]}
+ {2\log_{10}(\Omega_s/\Omega_p)},
+\]
+然后向上取整。稳定模拟滤波器只选择左半平面极点。
+\src{11\_1\_IIR数字滤波器的设计方法.pdf，p.1--6、p.13--17}
+
+\subsection{模拟原型频率变换}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+目标 & 在原型 $H_L(s)$ 中替换 $s$\\
+\midrule
+低通 & $s/\Omega_0$\\
+高通 & $\Omega_0/s$\\
+带通 & $(s^2+\Omega_0^2)/(Bs)$\\
+带阻 & $Bs/(s^2+\Omega_0^2)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+带通通常取 $B=\Omega_{p2}-\Omega_{p1}$，$\Omega_0^2=\Omega_{p1}\Omega_{p2}$。
+\src{11\_2\_IIR-脉冲响应不变.pdf，p.7--16、p.21--33}
+
+\subsection{模拟到数字：两种方法}
+\paragraph{脉冲响应不变法（impulse invariance）}
+\[
+ h[n]=T h_a(nT),\qquad z=e^{sT}.
+\]
+优点：模拟与数字频率近似线性；缺点：频谱发生周期叠加，存在混叠，不适合高通和带阻。
+\src{11\_2\_IIR-脉冲响应不变.pdf，p.35--38；12\_0\_IIR-双线性变换.pdf，p.8--12}
+
+\paragraph{双线性变换（bilinear transform）}
+\[
+ s=\frac{2}{T}\frac{1-z^{-1}}{1+z^{-1}},\qquad
+ \Omega=\frac{2}{T}\tan\frac{\omega}{2}.
+\]
+优点：左半平面一一映射到单位圆内，避免混叠；缺点：频率非线性扭曲。设计时必须先做预畸变（prewarping）。
+\src{12\_0\_IIR-双线性变换.pdf，p.13--18；12\_1\_IIR—双线性变换练习.pdf，p.1--5}
+
+\section{FIR 数字滤波器设计}
+\subsection{线性相位 FIR 的四种类型}
+FIR 系统函数：
+\[
+ H(z)=\sum_{n=0}^{N-1}h[n]z^{-n}.
+\]
+若实序列满足 $h[n]=h[N-1-n]$ 或 $h[n]=-h[N-1-n]$，则系统具有严格线性相位，群时延为 $(N-1)/2$。
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+类型 & 对称性 & 长度 N & 强制零点与限制\\
+\midrule
+I & 偶对称 & 奇 & 无额外端点限制\\
+II & 偶对称 & 偶 & $H(\pi)=0$，不能设计高通、带阻\\
+III & 奇对称 & 奇 & $H(0)=H(\pi)=0$，适合带通、微分器等\\
+IV & 奇对称 & 偶 & $H(0)=0$，不能设计低通、带阻\\
+\bottomrule
+\end{tabular}
+\end{center}
+\src{12\_2\_FIR数字滤波器的设计方法.pdf，p.7--20；14\_0 数字滤波器的基本结构.pdf，p.2}
+
+实系数线性相位 FIR 的非单位圆复零点成组出现：
+\[
+ z_0,\quad z_0^*,\quad \frac{1}{z_0},\quad \frac{1}{z_0^*}.
+\]
+\src{13\_0\_FIR数字滤波器的设计方法.pdf，p.7--12、p.18--20}
+
+\subsection{窗函数法}
+\[
+ h[n]=h_d[n]w[n],\qquad
+ h_d[n]=\frac{1}{2\pi}\int_{-\pi}^{\pi}H_d(e^{j\omega})e^{j\omega n}\dd\omega.
+\]
+主瓣宽度控制过渡带，旁瓣高度控制阻带衰减。截断理想响应会产生 Gibbs 现象。
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+窗函数 & 主瓣宽度 & 近似过渡带 & $A_p$ / dB & $A_s$ / dB\\
+\midrule
+矩形 & $4\pi/N$ & $1.8\pi/N$ & 0.82 & 21\\
+Hann & $8\pi/N$ & $6.2\pi/N$ & 0.056 & 44\\
+Hamming & $8\pi/N$ & $7\pi/N$ & 0.019 & 53\\
+Blackman & $12\pi/N$ & $11.4\pi/N$ & 0.0017 & 74\\
+\bottomrule
+\end{tabular}
+\end{center}
+常用路线：先由 $A_s$ 选窗，再由 $\Delta\omega=\omega_s-\omega_p$ 估算长度，最后取 $\omega_c=(\omega_s+\omega_p)/2$。
+\src{13\_1\_FIR数字滤波器的设计方法.pdf，p.1--21}
+
+\subsection{频率采样法}
+\[
+ H[k]=H_d(e^{j2\pi k/N}),\qquad
+ h[n]=\frac{1}{N}\sum_{k=0}^{N-1}H[k]W_N^{-nk}.
+\]
+采样点处精确匹配，采样点之间仍有误差；在不连续点附近可能出现肩峰，可加入一至三点过渡带改善。
+\src{13\_2\_用频率采样法设计FIR滤波器.pdf，p.1--12}
+
+\section{滤波器结构与有限字长效应}
+\subsection{结构选择}
+\begin{center}
+\begin{tabular}{p{3cm}p{5.3cm}p{6cm}}
+\toprule
+结构 & 特点 & 考试要点\\
+\midrule
+IIR 直接 I 型 & 前向和反馈延迟链分开 & 由差分方程直接画结构\\
+IIR 直接 II 型 & 共用延迟，存储量较少 & 又称正准型（canonical form）\\
+IIR 级联型 & 拆为一阶、二阶节乘积 & 可独立控制子系统零极点，较不敏感\\
+IIR 并联型 & 部分分式展开为子系统之和 & 运算快，各节误差较独立\\
+FIR 直接型 & 横截型、卷积型 & $M+1$ 个乘法器、$M$ 个延迟器\\
+FIR 线性相位型 & 利用 $h[n]=\pm h[N-1-n]$ & 共用乘法器，降低计算量\\
+\bottomrule
+\end{tabular}
+\end{center}
+三阶以上 IIR 通常避免直接型，优先考虑二阶节级联或并联。
+\src{14\_0 数字滤波器的基本结构.pdf，p.9--17；14\_1\_数字滤波器的基本结构.pdf，p.1--14；15\_0\_数字滤波器的基本结构.pdf，p.3--13}
+
+\subsection{有限字长效应}
+来源包括 A/D 输入量化、滤波器系数量化和运算误差。令量化步长 $q=2^{-b}$：
+\begin{itemize}
+  \item 舍入误差：$-q/2\le e_R\le q/2$，近似均匀分布；
+  \item 舍入误差方差：$\sigma_e^2=q^2/12$；
+  \item 字长增加 1 bit，SNR 约增加 6 dB；
+  \item IIR 系数量化会移动极点，极点密集时灵敏度更高，严重时失稳；
+  \item FIR 系数量化只移动零点，不影响稳定性。
+\end{itemize}
+减小有限字长效应：增加字长；IIR 高阶系统采用级联型或并联型结构。
+\src{15\_2\_有限字长效应与复习.pdf，p.3--20}
+
+\section{最后 30 分钟检查清单}
+\begin{itemize}
+  \item 会由差分方程写 $H(z)$，结合 ROC 求 $h[n]$，判断因果与稳定。
+  \item 会区分 DTFT、DFS、DFT 与 FFT；知道 DFT 是采样，FFT 是算法。
+  \item 会把线性卷积零填充到 $L_x+L_h-1$ 后用 DFT 实现。
+  \item 会解释混叠、泄漏、栅栏效应；会用 $\Delta f=f_s/N=1/T_p$。
+  \item 会画 DIT/DIF 蝶形、倒位序并统计层数和蝶形数。
+  \item 会算 Butterworth 阶数，掌握脉冲响应不变与双线性变换的优缺点。
+  \item 会判断 FIR 四类型，按阻带衰减与过渡带宽选择窗函数。
+  \item 会由 $H(z)$ 画直接型、级联型和并联型，解释有限字长风险。
+\end{itemize}
+
+\end{document}

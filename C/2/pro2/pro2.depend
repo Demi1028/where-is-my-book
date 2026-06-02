@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1776298864 source:d:\learn\c\pro2\linklist.cpp
+	<iostream>
+	<malloc.h>
+
+1776311946 source:d:\learn\c\pro2\ques4.cpp
+	"linklist.cpp"
+
+1776298864 d:\learn\c\pro2\linklist.cpp
+	<iostream>
+	<malloc.h>
+
+1776310595 source:d:\learn\c\pro2\ques3.cpp
+	"LinkList.cpp"
+
